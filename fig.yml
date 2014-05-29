@@ -1,0 +1,18 @@
+agent1:
+    build: agent1
+    ports:
+        - 7373
+        - 7946
+
+agent2:
+    build: agent2
+    ports:
+        - 7373
+        - 7946
+
+agent3:
+    build: agent3
+    ports:
+        - 7373
+        - 7946
+

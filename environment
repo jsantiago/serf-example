@@ -1,0 +1,85 @@
+#!/bin/bash
+
+clean() {
+    vagrant ssh -c 'CONTAINERS=$(docker ps  -a | grep "Exit" | awk "{print $1}"); [[ -n $CONTAINERS ]] && docker rm $CONTAINERS'
+    vagrant ssh -c 'IMAGES=$(docker images | grep "^<none>" | awk "{print $3}"); [[ -n $IMAGES ]] && docker rmi $IMAGES'
+}
+
+build() {
+    vagrant ssh -c 'cd /vagrant && fig build'
+}
+
+run() {
+    vagrant ssh -c 'cd /vagrant && fig up -d && ./join.sh'
+}
+
+status() {
+    vagrant status
+}
+
+start() {
+    vagrant up
+}
+
+restart() {
+    vagrant reload --provision
+}
+
+stop() {
+    vagrant halt
+}
+
+destroy() {
+    vagrant destroy
+}
+
+logs() {
+    vagrant ssh -c 'cd /vagrant && fig logs'
+}
+
+send() {
+    event=$1
+    shift
+    payload="$@"
+    vagrant ssh -c "serf event $event \"$payload\""
+    exit
+}
+
+usage() {
+    echo "Usage: $0 [ clean | build | run | status | start | restart | stop | destroy | logs | send ]"
+}
+
+if [[ $# == 0 ]]; then
+    usage
+    exit 1
+fi
+
+while [[ -n "$1" ]]; do
+    case $1 in
+        clean ) clean
+            ;;
+        build ) build
+            ;;
+        run ) run
+            ;;
+        status ) status
+            ;;
+        start ) start
+            ;;
+        restart ) restart
+            ;;
+        stop ) stop
+            ;;
+        destroy ) destroy
+            ;;
+        logs ) logs
+            ;;
+        send ) shift
+            send $@
+            ;;
+        * ) usage
+            exit 1
+            ;;
+    esac
+    shift
+done
