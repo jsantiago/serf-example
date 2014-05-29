@@ -1,8 +1,7 @@
 #!/bin/bash
 
 clean() {
-    vagrant ssh -c 'CONTAINERS=$(docker ps  -a | grep "Exit" | awk "{print $1}"); [[ -n $CONTAINERS ]] && docker rm $CONTAINERS'
-    vagrant ssh -c 'IMAGES=$(docker images | grep "^<none>" | awk "{print $3}"); [[ -n $IMAGES ]] && docker rmi $IMAGES'
+    vagrant ssh -c '/vagrant/clean.sh'
 }
 
 build() {
