@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Setup docker
+apt-get install -y docker.io
+usermod -a -G docker vagrant
+ln -sf /usr/bin/docker.io /usr/bin/docker
+
 # Install some dependencies
 apt-get install -y wget unzip
 
